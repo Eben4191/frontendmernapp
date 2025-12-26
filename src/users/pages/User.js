@@ -16,8 +16,6 @@ const User = () => {
 
   const { sendRequest, clearError, isLoading, error } = useHttpClient();
 
-  // ✅ SAFE API URL (fallback prevents production crash)
-
   // 🔹 Fetch users (paginated)
   useEffect(() => {
     const fetchUsers = async () => {
@@ -26,6 +24,7 @@ const User = () => {
       try {
         loadingRef.current = true;
 
+        // ✅ RELATIVE URL ONLY
         const responseData = await sendRequest(
           `/users?page=${page}&limit=10`
         );
@@ -44,7 +43,7 @@ const User = () => {
     };
 
     fetchUsers();
-  }, [sendRequest, page, hasMore, API_URL]);
+  }, [sendRequest, page, hasMore]);
 
   // 🔹 Infinite scroll observer
   useEffect(() => {

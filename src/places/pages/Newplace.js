@@ -42,7 +42,7 @@ export default function Newplace() {
         formData.append('description', values.description)
         formData.append('location', values.location)
         formData.append('image', values.image)
-      await sendRequest(`${process.env.REACT_APP_API_URL}/places`, 'POST', formData, 
+      await sendRequest(`/places`, 'POST', formData, 
         {Authorization:'Bearer ' + auth.token} //This line of code send the token received from the signup and login back to the backend to verify if the token is correct if the user identity is valid the auth check file in the middleware folder on the backend will verify this with the custom logic there.
       )
         history.push(`/${auth.userId}/places`);

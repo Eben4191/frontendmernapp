@@ -27,7 +27,7 @@ export default function Updateplace() {
   useEffect(() =>{
     const fetchPlaces = async () =>{
       try{
-       const response =  await sendRequest(`${process.env.REACT_APP_API_URL}/places/${placeId}`)
+       const response =  await sendRequest(`/places/${placeId}`)
         setLoadedPlaces(response.place);
       }catch(err){}
     }
@@ -41,7 +41,7 @@ export default function Updateplace() {
   },
     onSubmit: async (values) => {
       try{
-        await sendRequest(`${process.env.REACT_APP_API_URL}/places/${placeId}`, 'PATCH', JSON.stringify({
+        await sendRequest(`/places/${placeId}`, 'PATCH', JSON.stringify({
           title: values.title,
           description: values.description
         }), {'Content-Type': 'application/json', Authorization:'Bearer ' + auth.token}) //This code send the token back to the backend for user identity verification before further granting the update approval note bearer is included in the token just for convention purposes it does not serve any purpose  the token is passed in via the auth context according the logic written on the app.js component.

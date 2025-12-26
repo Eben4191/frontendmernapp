@@ -46,7 +46,7 @@ export default function PlaceItem(props) {
     setIsDeleteOpen(false);
     try {
       await sendRequest(
-        `${process.env.REACT_APP_API_URL}/places/${props.id}`,
+        `/places/${props.id}`,
         "DELETE",
         null,
         { Authorization: "Bearer " + auth.token }

@@ -67,7 +67,7 @@ export default function Signup() {
         formData.append("image", values.image);
 
         await sendRequest(
-          `${process.env.REACT_APP_API_URL}/users/signup`,
+          `/users/signup`,
           "POST",
           formData
         );
@@ -104,7 +104,7 @@ export default function Signup() {
 
     try {
       await sendRequest(
-        `${process.env.REACT_APP_API_URL}/users/verify-email`,
+        `/users/verify-email`,
         "POST",
         JSON.stringify({ email: userEmail, code: verificationCode }),
         { "Content-Type": "application/json" }
@@ -112,7 +112,7 @@ export default function Signup() {
 
       // Auto-login after verification
       const loginData = await sendRequest(
-        `${process.env.REACT_APP_API_URL}/users/login`,
+        `/users/login`,
         "POST",
         JSON.stringify({ email: userEmail, password: formik.values.password }),
         { "Content-Type": "application/json" }
@@ -136,7 +136,7 @@ export default function Signup() {
   const handleResendCode = async () => {
     try {
       await sendRequest(
-        `${process.env.REACT_APP_API_URL}/users/resend-verification`,
+        `/users/resend-verification`,
         "POST",
         JSON.stringify({ email: userEmail }),
         { "Content-Type": "application/json" }

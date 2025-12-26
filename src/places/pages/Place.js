@@ -12,7 +12,7 @@ export default function Place() {
  useEffect(() =>{
   const fetchPlaces = async () =>{
     try{
-      const responseData = await sendRequest(`${process.env.REACT_APP_API_URL}/places/user/${userId}`)
+      const responseData = await sendRequest(`/places/user/${userId}`)
        setLoadedPlaces(responseData.places)
     }catch(err){}
   }

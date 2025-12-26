@@ -30,7 +30,7 @@ export default function Login() {
     onSubmit: async (values) => {
       try {
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_API_URL}/users/login`,
+          `/users/login`,
           "POST",
           JSON.stringify({
             email: values.email,

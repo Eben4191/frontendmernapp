@@ -17,9 +17,6 @@ const User = () => {
   const { sendRequest, clearError, isLoading, error } = useHttpClient();
 
   // ✅ SAFE API URL (fallback prevents production crash)
-  const API_URL =
-    process.env.REACT_APP_API_URL ||
-    "https://mernapp-6uvs.onrender.com/api";
 
   // 🔹 Fetch users (paginated)
   useEffect(() => {
@@ -30,7 +27,7 @@ const User = () => {
         loadingRef.current = true;
 
         const responseData = await sendRequest(
-          `${API_URL}/users?page=${page}&limit=10`
+          `/users?page=${page}&limit=10`
         );
 
         if (!responseData?.users || responseData.users.length === 0) {

@@ -5,47 +5,60 @@ import { useHttpClient } from "../../shared/components/connectbackend/Http-hook"
 import ErrorModal from "../../shared/Uti/ErrolModal";
 import LoadingSpinner from "../../shared/Uti/LoadingSpinner";
 import UserSkeleton from "../component/UserSkeleton";
+
 const User = () => {
   const [loadedUser, setLoadedUser] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const bottomRef = useRef(); //useRef is used for referencing DOM elements directly
-  const loadingRef = useRef(false); // local guard to avoid rapid observer triggers
+  const bottomRef = useRef(null);
+  const loadingRef = useRef(false);
 
   const { sendRequest, clearError, isLoading, error } = useHttpClient();
+
+  // ✅ SAFE API URL (fallback prevents production crash)
+  const API_URL =
+    process.env.REACT_APP_API_URL ||
+    "https://mernapp-6uvs.onrender.com/api";
 
   // 🔹 Fetch users (paginated)
   useEffect(() => {
     const fetchUsers = async () => {
-      if (!hasMore) return;
+      if (!hasMore || loadingRef.current) return;
 
       try {
         loadingRef.current = true;
+
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_API_URL}/users?page=${page}&limit=10`
+          `${API_URL}/users?page=${page}&limit=10`
         );
 
-        if (responseData.users.length === 0) {
+        if (!responseData?.users || responseData.users.length === 0) {
           setHasMore(false);
           return;
         }
-        setLoadedUser(prev => [...prev, ...responseData.users]);//the prev is used to include the previous data to the new data we are fetching from the backend. note mongoose returns an array of objects the reason why we used an array here.
-      } catch (err) {}
-      finally { loadingRef.current = false; }
+
+        setLoadedUser(prev => [...prev, ...responseData.users]);
+      } catch (err) {
+        console.error("Fetching users failed:", err);
+      } finally {
+        loadingRef.current = false;
+      }
     };
 
     fetchUsers();
-  }, [sendRequest, page, hasMore]);
+  }, [sendRequest, page, hasMore, API_URL]);
 
   // 🔹 Infinite scroll observer
-  //on the code below we are using intersection API built into the browser to observe when the bottomRef element comes into view.
   useEffect(() => {
     if (!hasMore) return;
 
     const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && !isLoading && !loadingRef.current) {
-        loadingRef.current = true;
+      if (
+        entries[0].isIntersecting &&
+        !isLoading &&
+        !loadingRef.current
+      ) {
         setPage(prev => prev + 1);
       }
     });
@@ -74,11 +87,11 @@ const User = () => {
               <UserSkeleton key={i} />
             ))}
 
-          {/* this box component is at the bottom of the list when it comes into view it will trigger the next page load */}
+          {/* Trigger infinite scroll */}
           <Box ref={bottomRef} h="20px" />
         </Stack>
 
-        {/* FIRST LOAD SPINNER (optional) */}
+        {/* FIRST LOAD SPINNER */}
         {isLoading && loadedUser.length === 0 && (
           <Center mt={10}>
             <LoadingSpinner />

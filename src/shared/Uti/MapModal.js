@@ -17,7 +17,7 @@ export default function MapModal({ title, center, zoom = 14 }) {
   return (
     <>
       <Button colorScheme="yellow" onClick={onOpen}>
-        View on Map
+        Map
       </Button>
 
       <Modal 
